@@ -10,3 +10,4 @@ for i in nums:
     print(dic[i], end=" ")
 
 
+ㅂ
