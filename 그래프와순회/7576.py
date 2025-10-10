@@ -12,7 +12,7 @@ for i in range(N):
     for j in range(M):
         if apples[i][j] == 1:
             queue.append((i, j, 0))
-        if apples[i][j] == -1:
+        elif apples[i][j] == 0:
             not_ripted += 1
 
 if not_ripted == 0:
