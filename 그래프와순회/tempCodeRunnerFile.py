@@ -1,1 +1,1 @@
-e
+heapq.heapify(queue)

@@ -60,27 +60,51 @@
 # print(cnt)
 
 
-n = int(input())
-k = int(input())
+# n = int(input())
+# k = int(input())
 
-def func(n):
-    ans = 0
-    for i in range(1, n+1):
-        temp = n**2 // (k * i)
-        if temp > n:
-            temp = n
+# def func(n):
+#     ans = 0
+#     for i in range(1, n+1):
+#         temp = n**2 // (k * i)
+#         if temp > n:
+#             temp = n
         
-        ans += temp
-    return ans
+#         ans += temp
+#     return ans
 
-left = 1
-right = n ** 2
-while left <= right:
-    mid = (left + right) // 2
-    temp = func(mid)
-    if temp < k:
-        left = mid + 1
-    elif temp >= k:
-        right = mid - 1
+# left = 1
+# right = n ** 2
+# while left <= right:
+#     mid = (left + right) // 2
+#     temp = func(mid)
+#     if temp < k:
+#         left = mid + 1
+#     elif temp >= k:
+#         right = mid - 1
 
-print(right)
+# print(right)
+
+
+
+import heapq
+def dijkstra(graph, start):
+    distences = {node: float('inf') for node in graph}
+    distences[start] = 0
+    queue = [(0, start)]
+
+    while queue:
+        current_distence, current_node = heapq.heappop(queue)
+
+        if current_distence > distences[current_node]:
+            continue
+      
+        for neighbor, weight in graph[current_node]:
+            distence = current_distence + weight
+
+        if distence < distence[neighbor]:
+            distence[neighbor] = distence
+            heapq.heappush(queue, (distence, neighbor))
+
+    return distences
+        
