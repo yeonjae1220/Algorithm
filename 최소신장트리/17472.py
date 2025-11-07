@@ -194,3 +194,128 @@ else: # 섬은 여러개인데 연결 다리가 하나도 없는 경우
 
 
 # 항상 범위 검사를 먼저 하고 다음 조건 검사 하기 (list index out of range error 예방)
+
+
+"""
+개선할 점
+
+
+네, 물론이죠. `i == 0`부터 `i == 3`까지의 코드는 로직이 99% 동일하고 방향만 다르기 때문에, \*\*방향 벡터(`dx`, `dy`)\*\*를 사용해 하나의 `while` 루프로 완벽하게 합칠 수 있습니다.
+
+-----
+
+## \#\# 1. 최적화 원리: `while` 루프 합치기
+
+핵심은 `if i == 0:` (아래쪽)일 때는 `next_x += 1`을, `i == 3:` (오른쪽)일 때는 `next_y += 1`을 반복하는 것입니다.
+
+이 "반복적인 이동"을 `dx[i]`와 `dy[i]`가 대신하도록 만들면 됩니다.
+
+  * `i=0` (아래): `dx[0]=1`, `dy[0]=0`. `(next_x + 1, next_y + 0)`을 반복합니다.
+  * `i=1` (왼쪽): `dx[1]=0`, `dy[1]=-1`. `(next_x + 0, next_y - 1)`을 반복합니다.
+  * ...
+
+`if-elif` 문 4개를 지우고, `for i in range(4):` 루프 안에 `while` 루프 하나만 남기면 됩니다.
+
+-----
+
+## \#\# 2. 수정된 다리 탐색 코드
+
+`start_bridge`를 순회하는 부분을 다음과 같이 수정할 수 있습니다.
+
+```python
+# ... (이전 코드) ...
+
+# 얻은 섬 정보를 통해 다리 정보 찾아야 함
+for island, x, y in start_bridge:
+    for i in range(4):
+        # 1. 해당 방향의 "이동 값"을 가져옴
+        dir_x = dx[i]
+        dir_y = dy[i]
+
+        # 2. 첫 번째 칸 이동
+        next_x = x + dir_x
+        next_y = y + dir_y
+        
+        bridge_length = 0
+
+        # 3. 경계 검사 + 다리 건설을 하나의 while 루프로 처리
+        while 0 <= next_x < N and 0 <= next_y < M:
+            
+            # Case 1: 바다(0)를 만난 경우
+            if map[next_x][next_y] == 0:
+                bridge_length += 1
+                next_x += dir_x # 같은 방향으로 계속 이동
+                next_y += dir_y
+                
+            # Case 2: 다른 섬을 만난 경우
+            elif map[next_x][next_y] != island:
+                arrived_island = map[next_x][next_y]
+                if bridge_length >= 2:
+                    # 튜플로 append (이전 코드 버그 수정)
+                    bridges.append((bridge_length, island, arrived_island))
+                # 다리 건설 중단
+                break
+
+            # Case 3: 원래 섬을 다시 만난 경우
+            else:
+                # 다리 건설 중단
+                break
+```
+
+-----
+
+## \#\# 3. (추가) 더 근본적인 최적화
+
+위 코드는 `if-elif` 중복은 해결했지만, 여전히 **알고리즘적인 중복**이 남아있습니다.
+
+`start_bridge` 리스트는 섬의 *모든* 땅 좌표를 포함합니다. 이로 인해 같은 다리(예: 2번 섬과 3번 섬 사이)가 **수십 번씩 중복되어** `bridges` 리스트에 추가됩니다.
+
+가장 좋은 최적화는 `start_bridge` 리스트를 아예 사용하지 않고, **`map` 전체를 딱 한 번만 스캔**하는 것입니다.
+
+```python
+# 'start_bridge' 리스트와 관련 로직 모두 삭제
+
+bridges = set() # 1. 중복을 자동 제거하기 위해 set 사용
+
+for i in range(N):
+    for j in range(M):
+        # 현재 위치가 섬이 아니면(바다) 건너뜀
+        if map[i][j] == 0:
+            continue
+            
+        start_island = map[i][j]
+
+        # 2. 모든 방향이 아닌 "오른쪽"과 "아래쪽" 2방향만 탐색
+        # (위쪽과 왼쪽은 다른 칸에서 이미 탐색했으므로 중복됨)
+        # dx = [1(아래), 0, -1, 0(오른쪽)]
+        # dy = [0, -1, 0, 1]
+        for i_dir in [0, 3]: # 0: 아래쪽, 3: 오른쪽
+            dir_x = dx[i_dir]
+            dir_y = dy[i_dir]
+            
+            nx = i + dir_x
+            ny = j + dir_y
+            length = 0
+
+            while 0 <= nx < N and 0 <= ny < M:
+                if map[nx][ny] == 0:
+                    length += 1
+                    nx += dir_x
+                    ny += dir_y
+                elif map[nx][ny] != start_island:
+                    end_island = map[nx][ny]
+                    if length >= 2:
+                        # 3. set에 (길이, 작은섬번호, 큰섬번호)로 저장
+                        bridges.add((length, min(start_island, end_island), max(start_island, end_island)))
+                    break
+                else: # 같은 섬 만나면 중단
+                    break
+
+# 4. set를 리스트로 변환 후 정렬
+bridges = sorted(list(bridges))
+```
+
+이 방식이 중복 탐색을 원천적으로 차단하여 훨씬 빠르고 효율적입니다.
+
+
+"""
