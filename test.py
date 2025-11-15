@@ -87,24 +87,74 @@
 
 
 
-import heapq
-def dijkstra(graph, start):
-    distences = {node: float('inf') for node in graph}
-    distences[start] = 0
-    queue = [(0, start)]
+# import heapq
+# def dijkstra(graph, start):
+#     distences = {node: float('inf') for node in graph}
+#     distences[start] = 0
+#     queue = [(0, start)]
 
-    while queue:
-        current_distence, current_node = heapq.heappop(queue)
+#     while queue:
+#         current_distence, current_node = heapq.heappop(queue)
 
-        if current_distence > distences[current_node]:
-            continue
+#         if current_distence > distences[current_node]:
+#             continue
       
-        for neighbor, weight in graph[current_node]:
-            distence = current_distence + weight
+#         for neighbor, weight in graph[current_node]:
+#             distence = current_distence + weight
 
-        if distence < distence[neighbor]:
-            distence[neighbor] = distence
-            heapq.heappush(queue, (distence, neighbor))
+#         if distence < distence[neighbor]:
+#             distence[neighbor] = distence
+#             heapq.heappush(queue, (distence, neighbor))
 
-    return distences
+#     return distences
         
+
+
+# import sys
+# input = sys.stdin.readline
+
+# n = int(input())
+
+# if 620 <= n <= 780:
+#     print("Red")
+# elif 590 <= n < 620:
+#     print("Orange")
+# elif 570 <= n < 590:
+#     print("Yellow")
+# elif 495 <= n < 570:
+#     print("Green")
+# elif 450 <= n < 495:
+#     print("Blue")
+# elif 425 <= n < 450:
+#     print("Indigo")
+# elif 380 <= n < 425:
+#     print("Violet")
+
+# else:
+#     print("Out of Range")
+
+
+
+# import sys
+# input = sys.stdin.readline
+
+# W, P = map(int, input().split())
+
+# partition = list(map(int, input().split()))
+# partition.append(0)
+# partition.append(W)
+# partition.sort(reverse=True)
+# ans = set()
+
+# n = len(partition)
+
+# for i in range(0,n - 1):
+#     for j in range(i + 1, n):
+#         ans.add(partition[i] - partition[j])
+
+# result = sorted(list(ans))
+# print(*result)
+
+
+
+
