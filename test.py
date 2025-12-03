@@ -1,3 +1,6 @@
+import sys
+input = sys.stdin.readline
+
 # a, b = map(int, input().split())
 
 # if a < b:
@@ -156,5 +159,44 @@
 # print(*result)
 
 
+
+"""
+9084 dp 문제
+"""
+
+# T = int(input())
+# for _ in range(T):
+#     N = int(input())
+#     coin = list(map(int, input().split()))
+#     M = int(input())
+
+#     dp = [0] * (M + 1)
+#     dp[0] = 1
+
+#     for c in coin:
+#         for i in range(1, M + 1):
+#             if i - c >= 0:
+#                 dp[i] += dp[i - c]
+    
+#     print(dp[M])
+
+
+"""
+1535 dp문제
+"""
+# N = int(input())
+# demage = [0] + list(map(int, input().split()))
+# happy = [0] + list(map(int, input().split()))
+
+# dp = [[0] * 100 for _ in range(N + 1)]
+
+# for i in range(1, N + 1):
+#     for j in range(1, 100):
+#         if demage[i] <= j:
+#             dp[i][j] = max(dp[i-1][j], dp[i-1][j-demage[i]] + happy[i])
+#         else:
+#             dp[i][j] = dp[i-1][j]
+    
+# print(dp[N][99])
 
 
