@@ -10,6 +10,8 @@
 이걸 무한 루프 돌려버리기
 """
 
+# visited 관련 해서 체크하는 위치나 이런것 때문에 문제가 있었음
+
 
 import sys
 from collections import deque
@@ -36,11 +38,10 @@ def move_ppl():
                 temp_country = [(i, j)]
                 while q:
                     y, x = q.popleft()
-                    visited[y][x] = True
                     for k in range(4):
                         nx = x + dx[k]
                         ny = y + dy[k]
-                        if 0 <= nx < N and 0 <= ny < N:
+                        if 0 <= nx < N and 0 <= ny < N and not visited[ny][nx]:
                             if L <= abs(arr[y][x] - arr[ny][nx]) <= R:
                                 visited[ny][nx] = True
                                 q.append((ny, nx))
