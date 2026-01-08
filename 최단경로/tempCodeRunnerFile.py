@@ -1,2 +1,2 @@
 
-maze = [list(map(int, input().strip())) for _ 
+INF = -float('inf')
